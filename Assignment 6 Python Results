@@ -1,1 +1,53 @@
+class Meal:
+    def __init__(self, total_bill, tip, sex, smoker, day, time, size):
+        # types: total_bill(float), tip(float), sex(str), smoker(str), day(str), time(str), size(int)
+        self.total_bill = float(total_bill)
+        self.tip = float(tip)
+        self.sex = sex
+        self.smoker = smoker
+        self.day = day
+        self.time = time
+        self.size = int(size)
 
+    def __repr__(self):
+        return (f"Meal(total_bill={self.total_bill}, tip={self.tip}, sex='{self.sex}', "
+                f"smoker='{self.smoker}', day='{self.day}', time='{self.time}', size={self.size})")
+
+
+def read_meals_from_csv(path):
+    meals = []
+    with open(path, "r", encoding="utf-8") as f:
+        lines = [line.strip() for line in f if line.strip()]
+    if not lines:
+        return meals
+
+    header = lines[0].split(",")
+    for line in lines[1:]:
+        parts = line.split(",")
+        if len(parts) != len(header):
+            # skip malformed lines
+            continue
+        # order in file: total_bill,tip,sex,smoker,day,time,size
+        try:
+            meal = Meal(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5], parts[6])
+            meals.append(meal)
+        except ValueError:
+            # skip rows with conversion errors
+            continue
+    return meals
+
+
+if __name__ == "__main__":
+    csv_path = r"c:\Users\Aissatou Ndiaye\Downloads\tips.csv"
+    meals = read_meals_from_csv(csv_path)
+    print(f"Created {len(meals)} Meal objects")
+    # show first 5 samples
+    for m in meals[:5]:
+        print(m)
+
+Created 244 Meal objects
+Meal(total_bill=16.99, tip=1.01, sex='Female', smoker='No', day='Sun', time='Dinner', size=2)
+Meal(total_bill=10.34, tip=1.66, sex='Male', smoker='No', day='Sun', time='Dinner', size=3)
+Meal(total_bill=21.01, tip=3.5, sex='Male', smoker='No', day='Sun', time='Dinner', size=3)
+Meal(total_bill=23.68, tip=3.31, sex='Male', smoker='No', day='Sun', time='Dinner', size=2)
+Meal(total_bill=24.59, tip=3.61, sex='Female', smoker='No', day='Sun', time='Dinner', size=4)
